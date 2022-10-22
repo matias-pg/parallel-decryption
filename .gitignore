@@ -33,5 +33,5 @@ build/
 .vscode/
 
 ### Project files ###
-src/main/resources/*.csv*
+src/main/resources/*.encrypted*
 spring-shell.log

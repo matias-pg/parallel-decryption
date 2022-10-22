@@ -16,7 +16,7 @@ import java.nio.file.Path;
 @ShellComponent
 @RequiredArgsConstructor
 public class EncryptCommand {
-    private static final String DEFAULT_FILE = "src/main/resources/stories_3460954.csv";
+    private static final String DEFAULT_FILE = "src/main/resources/stories.csv";
 
     private final Encryptor encryptor;
     private final SimpleFileService simpleFileService;

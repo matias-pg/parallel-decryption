@@ -16,7 +16,7 @@ import java.nio.file.Path;
 @ShellComponent
 @RequiredArgsConstructor
 public class DecryptCommand {
-    private static final String DEFAULT_FILE = "src/main/resources/stories_3460954.csv";
+    private static final String DEFAULT_FILE = "src/main/resources/stories.csv";
 
     private final Decryptor decryptor;
     private final SimpleFileService simpleFileService;
@@ -37,7 +37,7 @@ public class DecryptCommand {
 
         long start = System.currentTimeMillis();
 
-        log.info("Getting file content & decrypting it");
+        log.info("Getting file contents & decrypting it");
         byte[] decryptedContent = chunkedFileService.read(path, decryptor::decrypt);
 
         long end = System.currentTimeMillis();
@@ -51,7 +51,7 @@ public class DecryptCommand {
 
         long start = System.currentTimeMillis();
 
-        log.info("Getting file content");
+        log.info("Getting file contents");
         byte[] content = simpleFileService.read(path);
 
         log.info("Decrypting file");
