@@ -7,8 +7,9 @@ a critical part of your application.
 
 That's what I wanted to solve here. What if we could do that decryption in parallel, using multiple threads?
 
-To do that, we need to store large files in smaller chunks. That way, we read all the small chunks in parallel, decrypt
-them (also in parallel) and then merge them.
+To do that, we need to store large files in smaller chunks. That way, we read all the small chunks
+in [parallel](https://github.com/matias-pg/parallel-decryption/blob/master/src/main/java/dev/matiaspg/paralleldecryption/service/ChunkedFileService.java#L56)
+, decrypt them (also in parallel) and then merge them.
 
 ![Diagram that explains how the decryption works when it's done in parallel](diagram.png "Diagram")
 
