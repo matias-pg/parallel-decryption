@@ -24,32 +24,11 @@ public class EncryptCommand {
 
     @ShellMethod
     public void encrypt(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
-        encryptChunked(_path);
+        encryptWhole(_path);
 
         System.out.println();
 
-        encryptWhole(_path);
-    }
-
-    @ShellMethod
-    public void encryptChunked(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
-        Path path = Path.of(_path);
-        Path targetPath = Path.of(path.toString().concat(".encrypted.chunked"));
-
-        long start = System.currentTimeMillis();
-
-        log.info("Getting file content from {}", path);
-        byte[] content = simpleFileService.read(path);
-
-        log.info("Encrypting file");
-        byte[] encryptedContent = encryptor.encrypt(content);
-
-        log.info("Writing encrypted file to {}", targetPath);
-        chunkedFileService.write(targetPath, encryptedContent);
-
-        long end = System.currentTimeMillis();
-
-        log.info("Reading, encrypting, and writing in parallel a file of {} bytes took {} ms", encryptedContent.length, end - start);
+        encryptChunked(_path);
     }
 
     @ShellMethod
@@ -59,17 +38,38 @@ public class EncryptCommand {
 
         long start = System.currentTimeMillis();
 
-        log.info("Getting file content from {}", path);
+        log.info("Getting file contents");
         byte[] content = simpleFileService.read(path);
 
         log.info("Encrypting file");
         byte[] encryptedContent = encryptor.encrypt(content);
 
-        log.info("Writing encrypted file to {}", targetPath);
+        log.info("Writing encrypted file");
         simpleFileService.write(targetPath, encryptedContent);
 
         long end = System.currentTimeMillis();
 
-        log.info("Reading, encrypting, and writing a whole file of {} bytes took {} ms", encryptedContent.length, end - start);
+        log.info("Reading, encrypting, and writing a whole file of {} bytes took {} ms", content.length, end - start);
+    }
+
+    @ShellMethod
+    public void encryptChunked(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
+        Path path = Path.of(_path);
+        Path targetPath = Path.of(path.toString().concat(".encrypted.chunked"));
+
+        long start = System.currentTimeMillis();
+
+        log.info("Getting file contents");
+        byte[] content = simpleFileService.read(path);
+
+        log.info("Encrypting file");
+        byte[] encryptedContent = encryptor.encrypt(content);
+
+        log.info("Writing encrypted file");
+        chunkedFileService.write(targetPath, encryptedContent);
+
+        long end = System.currentTimeMillis();
+
+        log.info("Reading, encrypting, and writing in parallel a file of {} bytes took {} ms", content.length, end - start);
     }
 }

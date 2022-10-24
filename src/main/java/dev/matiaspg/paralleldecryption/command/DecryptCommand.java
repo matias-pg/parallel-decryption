@@ -24,25 +24,11 @@ public class DecryptCommand {
 
     @ShellMethod
     public void decrypt(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
-        decryptChunked(_path);
+        decryptWhole(_path);
 
         System.out.println();
 
-        decryptWhole(_path);
-    }
-
-    @ShellMethod
-    public void decryptChunked(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
-        Path path = Path.of(_path.concat(".encrypted.chunked"));
-
-        long start = System.currentTimeMillis();
-
-        log.info("Getting file contents & decrypting it");
-        byte[] decryptedContent = chunkedFileService.read(path, decryptor::decrypt);
-
-        long end = System.currentTimeMillis();
-
-        log.info("Reading and decrypting in parallel a file of {} bytes took {} ms", decryptedContent.length, end - start);
+        decryptChunked(_path);
     }
 
     @ShellMethod
@@ -60,5 +46,19 @@ public class DecryptCommand {
         long end = System.currentTimeMillis();
 
         log.info("Reading and decrypting a whole file of {} bytes took {} ms", decryptedContent.length, end - start);
+    }
+
+    @ShellMethod
+    public void decryptChunked(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
+        Path path = Path.of(_path.concat(".encrypted.chunked"));
+
+        long start = System.currentTimeMillis();
+
+        log.info("Getting file chunks and decrypting them");
+        byte[] decryptedContent = chunkedFileService.read(path, decryptor::decrypt);
+
+        long end = System.currentTimeMillis();
+
+        log.info("Reading and decrypting in parallel a file of {} bytes took {} ms", decryptedContent.length, end - start);
     }
 }
