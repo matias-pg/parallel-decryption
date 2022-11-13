@@ -17,7 +17,7 @@ in [parallel](https://github.com/matias-pg/parallel-decryption/blob/master/src/m
 # The results
 
 To test the results, I used
-a [CSV](https://github.com/matias-pg/parallel-decryption/tree/master/src/main/resources/stories.csv) containing
+a [CSV](https://github.com/matias-pg/parallel-decryption/tree/master/csv/stories.csv) containing
 3,460,954 stories from Hacker News (the file weights 554 MiB). You can generate a similar CSV
 with [this script](https://gist.github.com/matias-pg/041af42b10a6c520843c0cb356f98732).
 

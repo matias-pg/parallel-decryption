@@ -19,7 +19,7 @@ import java.util.zip.Checksum;
 @ShellComponent
 @RequiredArgsConstructor
 public class DecryptCommand {
-    private static final String DEFAULT_FILE = "src/main/resources/stories.csv";
+    private static final String DEFAULT_FILE = "csv/stories.csv";
 
     private final Decryptor decryptor;
     private final SimpleFileService simpleFileService;
@@ -35,7 +35,7 @@ public class DecryptCommand {
 
         System.out.println();
 
-        log.info("Files are the same: {}", Arrays.equals(whole, chunked));
+        log.info("Results of \"whole\" and \"chunked\" decryption are the same: {}", Arrays.equals(whole, chunked));
 
         System.out.println();
 
@@ -66,7 +66,7 @@ public class DecryptCommand {
 
     @ShellMethod
     public byte[] decryptChunked(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
-        Path path = Path.of(_path.concat(".encrypted.chunked"));
+        Path path = Path.of(_path.concat(".encrypted"));
 
         long start = System.currentTimeMillis();
 
