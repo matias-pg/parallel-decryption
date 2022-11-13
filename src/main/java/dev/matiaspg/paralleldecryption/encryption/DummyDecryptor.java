@@ -17,10 +17,12 @@ public class DummyDecryptor implements Decryptor {
 
     @SneakyThrows({InterruptedException.class})
     private void delayToSimulateSlowDecryptionAlgorithm(int contentLength) {
-        // Divide by a smaller number to make it slower.
-        // 10_000 -> 78 seconds on 550 MiB
-        // 1_000 -> 780 seconds on 550 MiB (?)
-        // 222 -> 56 minutes on 550 MiB
+        // Divide by a smaller number to make it slower
+        // The times indicate how long it takes to decrypt a whole file of 554 MiB
+        // - 100_000 -> 8.7 seconds
+        // - 10_000 -> 78.4 seconds (1m 18.4s)
+        // - 1_000 -> 775.6 seconds (12m 55.6s)
+        // - 222 -> 3,490.5 seconds (58m 10.5s)
         Thread.sleep(contentLength / 222);
     }
 }

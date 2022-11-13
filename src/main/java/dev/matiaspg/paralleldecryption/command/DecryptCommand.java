@@ -11,6 +11,9 @@ import org.springframework.shell.standard.ShellOption;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 @Slf4j
 @ShellComponent
@@ -24,15 +27,26 @@ public class DecryptCommand {
 
     @ShellMethod
     public void decrypt(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
-        decryptWhole(_path);
+        byte[] whole = decryptWhole(_path);
 
         System.out.println();
 
-        decryptChunked(_path);
+        byte[] chunked = decryptChunked(_path);
+
+        System.out.println();
+
+        log.info("Files are the same: {}", Arrays.equals(whole, chunked));
+
+        System.out.println();
+
+        log.info("Checking that the decrypted result is the same as the original file");
+        long decryptedChecksum = getChecksum(chunked);
+        long originalChecksum = getChecksum(simpleFileService.read(Path.of(_path)));
+        log.info("Decrypted result is the same as the original file: {}", decryptedChecksum == originalChecksum);
     }
 
     @ShellMethod
-    public void decryptWhole(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
+    public byte[] decryptWhole(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
         Path path = Path.of(_path.concat(".encrypted"));
 
         long start = System.currentTimeMillis();
@@ -46,10 +60,12 @@ public class DecryptCommand {
         long end = System.currentTimeMillis();
 
         log.info("Reading and decrypting a whole file of {} bytes took {} ms", decryptedContent.length, end - start);
+
+        return decryptedContent;
     }
 
     @ShellMethod
-    public void decryptChunked(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
+    public byte[] decryptChunked(@ShellOption(value = {"--path", "-p"}, defaultValue = DEFAULT_FILE) String _path) throws IOException {
         Path path = Path.of(_path.concat(".encrypted.chunked"));
 
         long start = System.currentTimeMillis();
@@ -60,5 +76,13 @@ public class DecryptCommand {
         long end = System.currentTimeMillis();
 
         log.info("Reading and decrypting in parallel a file of {} bytes took {} ms", decryptedContent.length, end - start);
+
+        return decryptedContent;
+    }
+
+    private long getChecksum(byte[] bytes) {
+        Checksum crc32 = new CRC32();
+        crc32.update(bytes, 0, bytes.length);
+        return crc32.getValue();
     }
 }
